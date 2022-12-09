@@ -25,6 +25,7 @@ public class Author {
     private String name;
     private String email;
     private LocalDate dob;
+
     private int age;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class MovieServiceTest {
    @Mock
    private MovieRepository movieRepository;
-    @Mock private Movie movie;
+
     private MovieService underTest;
 
     @BeforeEach
@@ -55,9 +55,9 @@ class MovieServiceTest {
 
         //when
         //then
-     assertThatThrownBy(()-> underTest.addMovie(movie)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(()-> underTest.addMovie(movie)).isInstanceOf(IllegalStateException.class)
              .hasMessageContaining("Movie already exists");
-verify(movieRepository, never()).save(any());
+        verify(movieRepository, never()).save(any());
     }
     @Test
     void canAddMovie() {
@@ -80,14 +80,17 @@ verify(movieRepository, never()).save(any());
     }
 
     @Test
-    void deleteMovie() {
-        //given
-       movie = new Movie(1L,"Manifest","A mysterious movie",
+    void canDeleteMovie() {
+        // given
+        Movie movie = new Movie(1L,"Manifest","A mysterious movie",
                 LocalDate.of(2022, Month.APRIL,02), Collections.emptyList());
-       // when
-       when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
-       // then
+
+        given(movieRepository.existsById(any())).willReturn(true);
+
+        // when
         underTest.deleteMovie(1L);
-        verify(movieRepository).deleteById(1L);
+        //then
+        assertThat(movieRepository.findById(any())).isEmpty();
+
     }
 }
