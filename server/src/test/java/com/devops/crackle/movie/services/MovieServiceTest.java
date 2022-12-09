@@ -20,13 +20,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MovieServiceTest {
    @Mock
    private MovieRepository movieRepository;
+    @Mock private Movie movie;
     private MovieService underTest;
 
     @BeforeEach
@@ -80,18 +80,14 @@ verify(movieRepository, never()).save(any());
     }
 
     @Test
-    @Disabled
     void deleteMovie() {
-        // given
-        Movie movie = new Movie(1L,"Manifest","A mysterious movie",
+        //given
+       movie = new Movie(1L,"Manifest","A mysterious movie",
                 LocalDate.of(2022, Month.APRIL,02), Collections.emptyList());
-        given(movieRepository.save(movie)).willCallRealMethod();
-
-
-        //when
+       // when
+       when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+       // then
         underTest.deleteMovie(1L);
-        //then
         verify(movieRepository).deleteById(1L);
-
     }
 }
